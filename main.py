@@ -1,11 +1,12 @@
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtQml import QQmlApplicationEngine
+from PyQt6.QtCore import QTimer, QObject, pyqtSignal, pyqtProperty
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtQml import QQmlApplicationEngine
 import sys
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty
 
 
 class RpmBridge(QObject):
+    rpmChanged = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self._rpm = 0
@@ -18,19 +19,29 @@ class RpmBridge(QObject):
             self._rpm = value
             self.rpmChanged.emit()
 
-    rpmChanged = pyqtSignal()
     rpm = pyqtProperty(int, fget=get_rpm, fset=set_rpm, notify=rpmChanged)
 
 
-
-
-
+# Instancia de la app
 app = QApplication(sys.argv)
-engine = QQmlApplicationEngine()
-engine.load("main.qml")
-sys.exit(app.exec_())
 
+# Crea el engine de QML
+engine = QQmlApplicationEngine()
+
+# Crea el puente Python → QML
 bridge = RpmBridge()
 engine.rootContext().setContextProperty("RpmBridge", bridge)
-bridge.set_rpm(3500)
 
+# Carga la interfaz QML
+engine.load("main.qml")
+
+# Verifica que cargó bien el archivo QML
+if not engine.rootObjects():
+    print("Error: no se pudo cargar el archivo main.qml")
+    sys.exit(-1)
+
+# Asignamos un valor a RPM
+bridge.set_rpm(3000)
+
+# Ejecuta la app
+sys.exit(app.exec())

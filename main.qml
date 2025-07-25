@@ -15,7 +15,7 @@ Window {
         RpmBar {
             id: rpmBar
             anchors.centerIn: parent
-            value: rpmBridge.rpm
+            value: RpmBridge.rpm
 }
 }
 
