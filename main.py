@@ -9,7 +9,7 @@ class RpmBridge(QObject):
 
     def __init__(self):
         super().__init__()
-        self._rpm = 0
+        self._rpm =0 
 
     def get_rpm(self):
         return self._rpm
@@ -41,7 +41,7 @@ if not engine.rootObjects():
     sys.exit(-1)
 
 # Asignamos un valor a RPM
-bridge.set_rpm(3000)
+bridge.set_rpm(0)
 
 # Ejecuta la app
 sys.exit(app.exec())
